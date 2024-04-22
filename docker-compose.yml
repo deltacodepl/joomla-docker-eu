@@ -93,10 +93,13 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: ${JOOMLA_DB_PASSWORD}
       MYSQL_DATABASE: ${JOOMLA_DB_NAME}
+    ports:
+      - "3306:3306"
     volumes:
       - mysql-data:/var/lib/mysql
     networks:
       - joomla-network
+
 
   # mariadb:
   #   image: ${JOOMLA_MARIADB_IMAGE_TAG}
@@ -225,6 +228,15 @@ services:
       - "traefik.http.routers.http-catchall.middlewares=redirect-to-https"
       - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
     restart: unless-stopped
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:4.6.4-1
+    depends_on:
+     - mysql
+    ports:
+     - "81:80"
+    environment:
+     - PMA_HOST=mysql
 
   # backups:
   #   image: ${JOOMLA_MARIADB_IMAGE_TAG}
