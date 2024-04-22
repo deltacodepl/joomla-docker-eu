@@ -80,7 +80,8 @@ networks:
     external: true
 
 volumes:
-  mysql-data:
+  #mysql-data:
+  mariadb-data:
   joomla-data:
   joomla-mariadb-backup:
   joomla-data-backups:
@@ -88,30 +89,36 @@ volumes:
   traefik-certificates:
 
 services:
-  mysql:
-    image: ${JOOMLA_MARIADB_IMAGE_TAG}
-    environment:
-      MYSQL_ROOT_PASSWORD: ${JOOMLA_DB_PASSWORD}
-      MYSQL_DATABASE: ${JOOMLA_DB_NAME}
-    ports:
-      - "3306:3306"
-    volumes:
-      - mysql-data:/var/lib/mysql
-    networks:
-      - joomla-network
-
-
-  # mariadb:
+  # mysql:
   #   image: ${JOOMLA_MARIADB_IMAGE_TAG}
-  #   volumes:
-  #     - mariadb-data:/var/lib/mysql
   #   environment:
-  #     MARIADB_DATABASE: ${JOOMLA_DB_NAME}
-  #     MARIADB_USER: ${JOOMLA_DB_USER}
-  #     MARIADB_PASSWORD: ${JOOMLA_DB_PASSWORD}
-  #     MARIADB_ROOT_PASSWORD: ${JOOMLA_DB_ADMIN_PASSWORD}
+  #     MYSQL_ROOT_PASSWORD: ${JOOMLA_DB_PASSWORD}
+  #     MYSQL_DATABASE: ${JOOMLA_DB_NAME}
+  #   ports:
+  #     - "3306:3306"
+  #   volumes:
+  #     - mysql-data:/var/lib/mysql
   #   networks:
   #     - joomla-network
+
+
+  mariadb:
+    image: ${JOOMLA_MARIADB_IMAGE_TAG}
+    volumes:
+      - mariadb-data:/var/lib/mysql
+    environment:
+      #MARIADB_DATABASE: ${JOOMLA_DB_NAME}
+      MYSQL_DATABASE: ${JOOMLA_DB_NAME}
+      #MARIADB_USER: ${JOOMLA_DB_USER}
+      MYSQL_USER: ${JOOMLA_DB_USER}
+      # MARIADB_PASSWORD: ${JOOMLA_DB_PASSWORD}
+      MYSQL_PASSWORD: ${JOOMLA_DB_PASSWORD}
+      #MARIADB_ROOT_PASSWORD: ${JOOMLA_DB_ADMIN_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${JOOMLA_DB_ADMIN_PASSWORD}
+    ports:
+      - "3306:3306"
+    networks:
+      - joomla-network
     # healthcheck:
     #   test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
     #   interval: 10s
@@ -126,11 +133,11 @@ services:
       #- joomla-data:${DATA_PATH}
       - ./code:/var/www/html
     environment:
-      JOOMLA_DB_HOST: mysql
+      JOOMLA_DB_HOST: mariadb
       JOOMLA_DB_PORT_NUMBER: 3306
       JOOMLA_DB_NAME: ${JOOMLA_DB_NAME}
       # JOOMLA_DB_USER: ${JOOMLA_DB_USER}
-      JOOMLA_DB_PASSWORD: ${JOOMLA_DB_PASSWORD}    
+      JOOMLA_DB_PASSWORD: ${JOOMLA_DB_ADMIN_PASSWORD}   
       # JOOMLA_DATABASE_HOST: mariadb
       # JOOMLA_DATABASE_PORT_NUMBER: 3306
       # JOOMLA_DATABASE_NAME: ${JOOMLA_DB_NAME}
@@ -170,7 +177,7 @@ services:
       - "traefik.docker.network=traefik-network"
     restart: unless-stopped
     depends_on:
-      mysql:
+      mariadb:
         condition: service_started
       traefik:
         condition: service_healthy
@@ -232,11 +239,11 @@ services:
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:4.6.4-1
     depends_on:
-     - mysql
+     - mariadb
     ports:
      - "81:80"
     environment:
-     - PMA_HOST=mysql
+     - PMA_HOST=mariadb
 
   # backups:
   #   image: ${JOOMLA_MARIADB_IMAGE_TAG}
