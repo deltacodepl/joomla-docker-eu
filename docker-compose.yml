@@ -128,7 +128,10 @@ services:
     restart: unless-stopped
 
   joomla:
-    image: ${JOOMLA_IMAGE_TAG}
+    #image: ${JOOMLA_IMAGE_TAG}
+    image: 'joomla:3.10.12-php7.4-ko'
+    build:
+      context: .
     volumes:
       #- joomla-data:${DATA_PATH}
       - ./code:/var/www/html
@@ -154,6 +157,7 @@ services:
       JOOMLA_SMTP_PROTOCOL: ${JOOMLA_SMTP_PROTOCOL}
       JOOMLA_SMTP_SENDER_EMAIL: ${JOOMLA_SMTP_SENDER_EMAIL}
       JOOMLA_SMTP_SENDER_NAME: ${JOOMLA_SMTP_SENDER_NAME}
+      APACHE_DOCUMENT_ROOT: ${DOCUMENT_ROOT}"
     networks:
       - joomla-network
       - traefik-network
