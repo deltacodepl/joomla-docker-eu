@@ -1,158 +1,60 @@
-
-## BEGIN EXPIRES CACHING - JCH OPTIMIZE ##
-<IfModule mod_expires.c>
-	ExpiresActive on
-
-	# Your document html
-	ExpiresByType text/html "access plus 0 seconds"
-
-	# Data
-	ExpiresByType text/xml "access plus 0 seconds"
-	ExpiresByType application/xml "access plus 0 seconds"
-	ExpiresByType application/json "access plus 0 seconds"
-
-	# Feed
-	ExpiresByType application/rss+xml "access plus 1 hour"
-	ExpiresByType application/atom+xml "access plus 1 hour"
-
-	# Favicon (cannot be renamed)
-	ExpiresByType image/x-icon "access plus 1 week"
-
-	# Media: images, video, audio
-	ExpiresByType image/gif "access plus 1 year"
-	ExpiresByType image/png "access plus 1 year"
-	ExpiresByType image/jpg "access plus 1 year"
-	ExpiresByType image/jpeg "access plus 1 year"
-	ExpiresByType image/webp "access plus 1 year"
-	ExpiresByType audio/ogg "access plus 1 year"
-	ExpiresByType video/ogg "access plus 1 year"
-	ExpiresByType video/mp4 "access plus 1 year"
-	ExpiresByType video/webm "access plus 1 year"
-
-	# HTC files (css3pie)
-	ExpiresByType text/x-component "access plus 1 year"
-
-	# Webfonts
-	ExpiresByType image/svg+xml "access plus 1 year"
-	ExpiresByType font/* "access plus 1 year"
-	ExpiresByType application/x-font-ttf "access plus 1 year"
-	ExpiresByType application/x-font-truetype "access plus 1 year"
-	ExpiresByType application/x-font-opentype "access plus 1 year"
-	ExpiresByType application/font-ttf "access plus 1 year"
-	ExpiresByType application/font-woff "access plus 1 year"
-	ExpiresByType application/font-woff2 "access plus 1 year"
-	ExpiresByType application/vnd.ms-fontobject "access plus 1 year"
-	ExpiresByType application/font-sfnt "access plus 1 year"
-
-	# CSS and JavaScript
-	ExpiresByType text/css "access plus 1 year"
-	ExpiresByType text/javascript "access plus 1 year"
-	ExpiresByType application/javascript "access plus 1 year"
-
-	<IfModule mod_headers.c>
-		Header set Cache-Control "no-cache, no-store, must-revalidate"
-		
-		<FilesMatch "\.(js|css|ttf|woff2?|svg|png|jpe?g|webp|webm|mp4|ogg)(\.gz)?$">
-			Header set Cache-Control "public"	
-			Header set Vary: Accept-Encoding
-		</FilesMatch>
-		#Some server not properly recognizing WEBPs
-		<FilesMatch "\.webp$">
-			Header set Content-Type "image/webp"
-			ExpiresDefault "access plus 1 year"
-		</FilesMatch>	
-	</IfModule>
-
-</IfModule>
-
-<IfModule mod_brotli.c>
-	<IfModule mod_filter.c>
-		AddOutputFilterByType BROTLI_COMPRESS text/html text/xml text/plain 
-		AddOutputFilterByType BROTLI_COMPRESS application/rss+xml application/xml application/xhtml+xml 
-		AddOutputFilterByType BROTLI_COMPRESS text/css 
-		AddOutputFilterByType BROTLI_COMPRESS text/javascript application/javascript application/x-javascript 
-		AddOutputFilterByType BROTLI_COMPRESS image/x-icon image/svg+xml
-		AddOutputFilterByType BROTLI_COMPRESS application/rss+xml
-		AddOutputFilterByType BROTLI_COMPRESS application/font application/font-truetype application/font-ttf
-		AddOutputFilterByType BROTLI_COMPRESS application/font-otf application/font-opentype
-		AddOutputFilterByType BROTLI_COMPRESS application/font-woff application/font-woff2
-		AddOutputFilterByType BROTLI_COMPRESS application/vnd.ms-fontobject
-		AddOutputFilterByType BROTLI_COMPRESS font/ttf font/otf font/opentype font/woff font/woff2
-	</IfModule>
-</IfModule>
-
-<IfModule mod_deflate.c>
-	<IfModule mod_filter.c>
-		AddOutputFilterByType DEFLATE text/html text/xml text/plain 
-		AddOutputFilterByType DEFLATE application/rss+xml application/xml application/xhtml+xml 
-		AddOutputFilterByType DEFLATE text/css 
-		AddOutputFilterByType DEFLATE text/javascript application/javascript application/x-javascript 
-		AddOutputFilterByType DEFLATE image/x-icon image/svg+xml
-		AddOutputFilterByType DEFLATE application/rss+xml
-		AddOutputFilterByType DEFLATE application/font application/font-truetype application/font-ttf
-		AddOutputFilterByType DEFLATE application/font-otf application/font-opentype
-		AddOutputFilterByType DEFLATE application/font-woff application/font-woff2
-		AddOutputFilterByType DEFLATE application/vnd.ms-fontobject
-		AddOutputFilterByType DEFLATE font/ttf font/otf font/opentype font/woff font/woff2
-	</IfModule>
-</IfModule>
-
-# Don't compress files with extension .gz or .br
-<IfModule mod_rewrite.c>
-	RewriteRule "\.(gz|br)$" "-" [E=no-gzip:1,E=no-brotli:1]
-</IfModule>
-
-<IfModule !mod_rewrite.c>
-	<IfModule mod_setenvif.c>
-		SetEnvIfNoCase Request_URI \.(gz|br)$ no-gzip no-brotli
-	</IfModule>
-</IfModule>
-## END EXPIRES CACHING - JCH OPTIMIZE ##
-
-#php_flag magic_quotes_gpc Off
-
 ##
 # @package    Joomla
-# @copyright  Copyright (C) 2005 - 2014 Open Source Matters. All rights reserved.
+# @copyright  (C) 2005 Open Source Matters, Inc. <https://www.joomla.org>
 # @license    GNU General Public License version 2 or later; see LICENSE.txt
 ##
 
 ##
 # READ THIS COMPLETELY IF YOU CHOOSE TO USE THIS FILE!
 #
-# The line just below this section: 'Options +FollowSymLinks' may cause problems
-# with some server configurations.  It is required for use of mod_rewrite, but may already
-# be set by your server administrator in a way that dissallows changing it in
-# your .htaccess file.  If using it causes your server to error out, comment it out (add # to
-# beginning of line), reload your site in your browser and test your sef url's.  If they work,
-# it has been set by your server administrator and you do not need it set here.
+# The line 'Options +FollowSymLinks' may cause problems with some server configurations.
+# It is required for the use of Apache mod_rewrite, but it may have already been set by
+# your server administrator in a way that disallows changing it in this .htaccess file.
+# If using it causes your site to produce an error, comment it out (add # to the
+# beginning of the line), reload your site in your browser and test your sef urls. If
+# they work, then it has been set by your server administrator and you do not need to
+# set it here.
 ##
 
+## No directory listings
+<IfModule mod_autoindex.c>
+  IndexIgnore *
+</IfModule>
+
+## Suppress mime type detection in browsers for unknown types
+<IfModule mod_headers.c>
+Header always set X-Content-Type-Options "nosniff"
+</IfModule>
+
 ## Can be commented out if causes errors, see notes above.
-Options +FollowSymLinks
+Options +FollowSymlinks
+#Options -Indexes
+
+## Disable inline JavaScript when directly opening SVG files or embedding them with the object-tag
+<FilesMatch "\.svg$">
+  <IfModule mod_headers.c>
+    Header always set Content-Security-Policy "script-src 'none'"
+  </IfModule>
+</FilesMatch>
 
 ## Mod_rewrite in use.
 
 RewriteEngine On
-RewriteCond %{HTTPS} =on
-RewriteCond %{HTTP_HOST} ^www\.
-RewriteRule ^(.*)$ https://tapflo.com.au/$1 [R,QSA,L]
-
-RewriteRule ^submersible-pumps/sf-series-dewatering-pump https://tapflo.com.au/submersible-pumps [R=301,L]
 
 ## Begin - Rewrite rules to block out some common exploits.
-# If you experience problems on your site block out the operations listed below
-# This attempts to block the most common type of exploit `attempts` to Joomla!
+# If you experience problems on your site then comment out the operations listed
+# below by adding a # to the beginning of the line.
+# This attempts to block the most common type of exploit `attempts` on Joomla!
 #
-# Block out any script trying to base64_encode data within the URL.
+# Block any script trying to base64_encode data within the URL.
 RewriteCond %{QUERY_STRING} base64_encode[^(]*\([^)]*\) [OR]
-# Block out any script that includes a <script> tag in URL.
+# Block any script that includes a <script> tag in URL.
 RewriteCond %{QUERY_STRING} (<|%3C)([^s]*s)+cript.*(>|%3E) [NC,OR]
-# Block out any script trying to set a PHP GLOBALS variable via URL.
+# Block any script trying to set a PHP GLOBALS variable via URL.
 RewriteCond %{QUERY_STRING} GLOBALS(=|\[|\%[0-9A-Z]{0,2}) [OR]
-# Block out any script trying to modify a _REQUEST variable via URL.
+# Block any script trying to modify a _REQUEST variable via URL.
 RewriteCond %{QUERY_STRING} _REQUEST(=|\[|\%[0-9A-Z]{0,2})
-# Return 403 Forbidden header and show the content of the root homepage
+# Return 403 Forbidden header and show the content of the root home page
 RewriteRule .* index.php [F]
 #
 ## End - Rewrite rules to block out some common exploits.
@@ -166,7 +68,7 @@ RewriteRule .* index.php [F]
 ## End - Custom redirects
 
 ##
-# Uncomment following line if your webserver's URL
+# Uncomment the following line if your webserver's URL
 # is not directly related to physical file paths.
 # Update Your Joomla! Directory (just / for root).
 ##
@@ -188,43 +90,3 @@ RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule .* index.php [L]
 #
 ## End - Joomla! core SEF Section.
-ErrorDocument 404 /templates/taplo-new/error.php
-
-## Note: It may cause problems on your server and you may need to remove it
-FileETag MTime Size
-# AddOutputFilterByType is now deprecated by Apache. Use mod_filter in the future.
-
-<IfModule mod_deflate.c>
-  AddOutputFilterByType DEFLATE text/plain text/xml text/css application/xml application/xhtml+xml application/rss+xml application/javascript application/x-javascript image/svg+xml
-</IfModule>
-
-# Enable expiration control
-<IfModule mod_gzip.c>
- mod_gzip_on Yes
- mod_gzip_dechunk Yes
- mod_gzip_keep_workfiles No
- mod_gzip_can_negotiate Yes
- mod_gzip_add_header_count Yes
- mod_gzip_send_vary Yes
- mod_gzip_min_http 1000
- mod_gzip_minimum_file_size 300
- mod_gzip_maximum_file_size 512000
- mod_gzip_maximum_inmem_size 60000
- mod_gzip_handle_methods GET
- mod_gzip_item_include file \.(html?|txt|css|js|php|pl|xml|rb|py|svg|scgz)$
- mod_gzip_item_include mime ^text/plain$
- mod_gzip_item_include mime ^text/xml$
- mod_gzip_item_include mime ^text/css$
- mod_gzip_item_include mime ^application/xml$
- mod_gzip_item_include mime ^application/xhtml+xml$
- mod_gzip_item_include mime ^application/rss+xml$
- mod_gzip_item_include mime ^application/javascript$
- mod_gzip_item_include mime ^application/x-javascript$
- mod_gzip_item_include mime ^image/svg+xml$
- mod_gzip_item_exclude rspheader ^Content-Encoding:.*gzip.*
- mod_gzip_item_include handler ^cgi-script$
- mod_gzip_item_include handler ^server-status$
- mod_gzip_item_include handler ^server-info$
- mod_gzip_item_include handler ^application/x-httpd-php
- mod_gzip_item_exclude mime ^image/.*
-</IfModule>

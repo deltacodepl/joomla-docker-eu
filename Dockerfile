@@ -5,7 +5,7 @@
 #
 
 # from https://downloads.joomla.org/technical-requirements
-FROM php:7.4-apache
+FROM php:7.4.30-apache
 LABEL maintainer="None"
 
 # Disable remote database security requirements.

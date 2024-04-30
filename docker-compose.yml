@@ -248,6 +248,8 @@ services:
      - "81:80"
     environment:
      - PMA_HOST=mariadb
+    networks:
+      - joomla-network
 
   # backups:
   #   image: ${JOOMLA_MARIADB_IMAGE_TAG}
