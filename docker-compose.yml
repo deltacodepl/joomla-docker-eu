@@ -82,6 +82,7 @@ networks:
 volumes:
   #mysql-data:
   mariadb-data:
+  mariadb2-data:
   joomla-data:
   joomla-mariadb-backup:
   joomla-data-backups:
@@ -125,6 +126,25 @@ services:
     #   timeout: 5s
     #   retries: 3
     #   start_period: 60s
+    restart: unless-stopped
+  
+  mariadb2:
+    image: ${JOOMLA_MARIADB_IMAGE_TAG}
+    volumes:
+      - mariadb2-data:/var/lib/mysql
+    environment:
+      #MARIADB_DATABASE: ${JOOMLA_DB_NAME}
+      MYSQL_DATABASE: ${JOOMLA_DB_NAME}
+      #MARIADB_USER: ${JOOMLA_DB_USER}
+      MYSQL_USER: ${JOOMLA_DB_USER}
+      # MARIADB_PASSWORD: ${JOOMLA_DB_PASSWORD}
+      MYSQL_PASSWORD: ${JOOMLA_DB_PASSWORD}
+      #MARIADB_ROOT_PASSWORD: ${JOOMLA_DB_ADMIN_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${JOOMLA_DB_ADMIN_PASSWORD}
+    # ports:
+    #   - "3307:3306"
+    networks:
+      - joomla-network
     restart: unless-stopped
 
   joomla:
@@ -243,11 +263,11 @@ services:
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:4.6.4-1
     depends_on:
-     - mariadb
+     - mariadb2
     ports:
      - "81:80"
     environment:
-     - PMA_HOST=mariadb
+     - PMA_HOST=mariadb2
     networks:
       - joomla-network
 
