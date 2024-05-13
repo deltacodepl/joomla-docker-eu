@@ -164,7 +164,7 @@ RUN set -ex; \
 
 # Copy init scripts
 COPY docker-entrypoint-3.10.sh /entrypoint.sh
-RUN chmod +x entrypoint.sh
+RUN chmod +x /entrypoint.sh
 COPY makedb.php /makedb.php
 
 ENTRYPOINT ["/entrypoint.sh"]
