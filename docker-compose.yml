@@ -107,6 +107,7 @@ services:
     image: ${JOOMLA_MARIADB_IMAGE_TAG}
     volumes:
       - mariadb-data:/var/lib/mysql
+      - ./db:/docker-entrypoint-initdb.d
     environment:
       #MARIADB_DATABASE: ${JOOMLA_DB_NAME}
       MYSQL_DATABASE: ${JOOMLA_DB_NAME}
@@ -132,6 +133,7 @@ services:
     image: ${JOOMLA_MARIADB_IMAGE_TAG}
     volumes:
       - mariadb2-data:/var/lib/mysql
+      - ./db2:/docker-entrypoint-initdb.d
     environment:
       #MARIADB_DATABASE: ${JOOMLA_DB_NAME}
       MYSQL_DATABASE: ${JOOMLA_DB_NAME}
